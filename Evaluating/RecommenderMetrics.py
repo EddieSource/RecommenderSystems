@@ -12,6 +12,23 @@ class RecommenderMetrics:
         return accuracy.rmse(predictions, verbose=False)
 
     def GetTopN(predictions, n=10, minimumRating=4.0):
+        '''
+
+        Parameters
+        ----------
+        predictions : [[]]
+            Predictions from some recommenders.
+        n : INT
+            number of top predictions. The default is 10.
+        minimumRating : FLOAT
+            minimum threshhold that user probably don't love. The default is 4.0.
+
+        Returns
+        -------
+        topN : {}
+            userID -> topN ratings
+
+        '''
         topN = defaultdict(list)
 
 
@@ -26,6 +43,22 @@ class RecommenderMetrics:
         return topN
 
     def HitRate(topNPredicted, leftOutPredictions):
+        '''
+        
+
+        Parameters
+        ----------
+        topNPredicted : {}
+            userID -> topN
+        leftOutPredictions : [[]]
+            left predictions after using "leave one out cross validation"
+
+        Returns
+        -------
+        FLOAT
+            the precision metrics.
+
+        '''
         hits = 0
         total = 0
 
@@ -127,6 +160,7 @@ class RecommenderMetrics:
     def Diversity(topNPredicted, simsAlgo):
         n = 0
         total = 0
+        # need a similarity matrix
         simsMatrix = simsAlgo.compute_similarities()
         for userID in topNPredicted.keys():
             pairs = itertools.combinations(topNPredicted[userID], 2)

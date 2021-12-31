@@ -19,6 +19,7 @@ sim_options = {'name': 'pearson_baseline', 'user_based': False}
 simsAlgo = KNNBaseline(sim_options=sim_options)
 simsAlgo.fit(fullTrainSet)
 
+# 25% for testing, 75% for training
 print("\nBuilding recommendation model...")
 trainSet, testSet = train_test_split(data, test_size=.25, random_state=1)
 
@@ -28,6 +29,7 @@ algo.fit(trainSet)
 print("\nComputing recommendations...")
 predictions = algo.test(testSet)
 
+# higher error metrics are bad, as low as possible if accruacy is goal
 print("\nEvaluating accuracy of model...")
 print("RMSE: ", RecommenderMetrics.RMSE(predictions))
 print("MAE: ", RecommenderMetrics.MAE(predictions))

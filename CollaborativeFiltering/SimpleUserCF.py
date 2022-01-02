@@ -20,6 +20,7 @@ data = ml.loadMovieLensLatestSmall()
 
 trainSet = data.build_full_trainset()
 
+# need user_based similarity matrix
 sim_options = {'name': 'cosine',
                'user_based': True
                }

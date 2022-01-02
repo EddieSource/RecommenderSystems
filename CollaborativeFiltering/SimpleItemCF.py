@@ -14,11 +14,13 @@ from operator import itemgetter
 testSubject = '85'
 k = 10
 
+# Load our data set
 ml = MovieLens()
 data = ml.loadMovieLensLatestSmall()
 
 trainSet = data.build_full_trainset()
 
+# get the item_based similarity matrix (item to item) 
 sim_options = {'name': 'cosine',
                'user_based': False
                }

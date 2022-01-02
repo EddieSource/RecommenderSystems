@@ -14,6 +14,7 @@ import heapq
 
 class ContentKNNAlgorithm(AlgoBase):
 
+    # top k is passing here
     def __init__(self, k=40, sim_options={}):
         AlgoBase.__init__(self)
         self.k = k
@@ -32,6 +33,7 @@ class ContentKNNAlgorithm(AlgoBase):
         print("Computing content-based similarity matrix...")
             
         # Compute genre distance for every movie combination as a 2x2 matrix
+        # row and column are separately the products id
         self.similarities = np.zeros((self.trainset.n_items, self.trainset.n_items))
         
         for thisRating in range(self.trainset.n_items):
@@ -42,8 +44,11 @@ class ContentKNNAlgorithm(AlgoBase):
                 otherMovieID = int(self.trainset.to_raw_iid(otherRating))
                 genreSimilarity = self.computeGenreSimilarity(thisMovieID, otherMovieID, genres)
                 yearSimilarity = self.computeYearSimilarity(thisMovieID, otherMovieID, years)
-                #mesSimilarity = self.computeMiseEnSceneSimilarity(thisMovieID, otherMovieID, mes)
+                # mesSimilarity = self.computeMiseEnSceneSimilarity(thisMovieID, otherMovieID, mes)
+                
+                # to calculate similarities, just multiply the similarity of different content attributes together
                 self.similarities[thisRating, otherRating] = genreSimilarity * yearSimilarity
+                # self.similarities[thisRating, otherRating] = genreSimilarity * yearSimilarity * mesSimilarity
                 self.similarities[otherRating, thisRating] = self.similarities[thisRating, otherRating]
                 
         print("...done.")
@@ -51,6 +56,7 @@ class ContentKNNAlgorithm(AlgoBase):
         return self
     
     def computeGenreSimilarity(self, movie1, movie2, genres):
+        # recall cos(theta) = a * b / (|a| * |b|), same logic here
         genres1 = genres[movie1]
         genres2 = genres[movie2]
         sumxx, sumxy, sumyy = 0, 0, 0
@@ -64,11 +70,14 @@ class ContentKNNAlgorithm(AlgoBase):
         return sumxy/math.sqrt(sumxx*sumyy)
     
     def computeYearSimilarity(self, movie1, movie2, years):
+        # choose a year period that makes movie different, default 10.0
         diff = abs(years[movie1] - years[movie2])
+        # choose a random function that similarity decays when difference grows
         sim = math.exp(-diff / 10.0)
         return sim
     
     def computeMiseEnSceneSimilarity(self, movie1, movie2, mes):
+        # add the stage feature of a movie as a content attribute when computing similarity
         mes1 = mes[movie1]
         mes2 = mes[movie2]
         if (mes1 and mes2):

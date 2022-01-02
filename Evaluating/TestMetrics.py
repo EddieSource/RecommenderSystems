@@ -84,4 +84,5 @@ print("\nUser coverage: ", RecommenderMetrics.UserCoverage(topNPredicted, fullTr
 print("\nDiversity: ", RecommenderMetrics.Diversity(topNPredicted, simsAlgo))
 
 # Measure novelty (average popularity rank of recommendations):
+# high novelty might casue problems in building user trust because people are inclined to see more similar stuff
 print("\nNovelty (average popularity rank): ", RecommenderMetrics.Novelty(topNPredicted, rankings))

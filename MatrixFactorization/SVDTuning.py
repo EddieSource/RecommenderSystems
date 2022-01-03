@@ -28,6 +28,12 @@ random.seed(0)
 # Load up common data set for the recommender algorithms
 (ml, evaluationData, rankings) = LoadMovieLensData()
 
+
+# adjust parameters: how many latent factors to extract? how many dimensions we want to reduce to? 
+# learning rate, n_epochs
+
+# suprise allows you to define a grid of difference parameters you want to try out 
+# and it will try all the combinations to see which combination performs the best
 print("Searching for best parameters...")
 param_grid = {'n_epochs': [20, 30], 'lr_all': [0.005, 0.010],
               'n_factors': [50, 100]}

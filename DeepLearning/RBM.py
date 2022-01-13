@@ -13,11 +13,19 @@ import tensorflow as tf
 class RBM(object):
 
     def __init__(self, visibleDimensions, epochs=20, hiddenDimensions=50, ratingValues=10, learningRate=0.001, batchSize=100):
-
+        
+        # product of number of movies and number of distinct rating values
         self.visibleDimensions = visibleDimensions
+        
+        # number of times we should train the model
         self.epochs = epochs
+        
+        # number of hidden nuerons
         self.hiddenDimensions = hiddenDimensions
+        
+        # numeber of distinct rating values, default 1-10
         self.ratingValues = ratingValues
+        
         self.learningRate = learningRate
         self.batchSize = batchSize
         
@@ -35,15 +43,16 @@ class RBM(object):
             trX = np.array(X)
             for i in range(0, trX.shape[0], self.batchSize):
                 epochX = trX[i:i+self.batchSize]
-                self.MakeGraph(epochX)
+                self.MakeGraph(epochX) # contains the rbm
 
             print("Trained epoch ", epoch)
 
 
     def GetRecommendations(self, inputUser):
+        # get recommendations from an already trained model
         
         feed = self.MakeHidden(inputUser)
-        rec = self.MakeVisible(feed)
+        rec = self.MakeVisible(feed)   
         return rec[0]       
 
     def MakeGraph(self, inputUser):
@@ -88,11 +97,13 @@ class RBM(object):
         self.update = [weightUpdate, hiddenBiasUpdate, visibleBiasUpdate]
         
     def MakeHidden(self, inputUser):
+        # make the hidden layer
         hidden = tf.nn.sigmoid(tf.matmul(inputUser, self.weights) + self.hiddenBias)
         self.MakeGraph(inputUser)
         return hidden
     
     def MakeVisible(self, feed):
+        # make the visible layer
         visible = tf.nn.sigmoid(tf.matmul(feed, tf.transpose(self.weights)) + self.visibleBias)
         #self.MakeGraph(feed)
         return visible

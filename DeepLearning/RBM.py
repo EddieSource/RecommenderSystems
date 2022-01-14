@@ -52,7 +52,7 @@ class RBM(object):
         # get recommendations from an already trained model
         
         feed = self.MakeHidden(inputUser)
-        rec = self.MakeVisible(feed)   
+        rec = self.MakeVisible(feed)    
         return rec[0]       
 
     def MakeGraph(self, inputUser):
@@ -62,7 +62,7 @@ class RBM(object):
         
         # Forward pass
         # Sample hidden layer given visible...
-        # Get tensor of hidden probabilities
+        # Get tensor of hidden probabilities, result of the hidden layer of forward pass
         hProb0 = tf.nn.sigmoid(tf.matmul(inputUser, self.weights) + self.hiddenBias)
         # Sample from all of the distributions
         hSample = tf.nn.relu(tf.sign(hProb0 - tf.random.uniform(tf.shape(hProb0))))
@@ -75,6 +75,8 @@ class RBM(object):
         
         # Build up our mask for missing ratings
         vMask = tf.sign(inputUser) # Make sure everything is 0 or 1
+        
+        # reshape mask to the form of a 3d vector with user, movie, ifrating
         vMask3D = tf.reshape(vMask, [tf.shape(v)[0], -1, self.ratingValues]) # Reshape into arrays of individual ratings
         vMask3D = tf.reduce_max(vMask3D, axis=[2], keepdims=True) # Use reduce_max to either give us 1 for ratings that exist, and 0 for missing ratings
         
@@ -86,6 +88,7 @@ class RBM(object):
         hProb1 = tf.nn.sigmoid(tf.matmul(vProb, self.weights) + self.hiddenBias)
         backward = tf.matmul(tf.transpose(vProb), hProb1)
     
+
         # Now define what each epoch will do...
         # Run the forward and backward passes, and update the weights
         weightUpdate = self.weights.assign_add(self.learningRate * (forward - backward))
@@ -105,5 +108,5 @@ class RBM(object):
     def MakeVisible(self, feed):
         # make the visible layer
         visible = tf.nn.sigmoid(tf.matmul(feed, tf.transpose(self.weights)) + self.visibleBias)
-        #self.MakeGraph(feed)
+        #self.MakeGraph(feed) 
         return visible

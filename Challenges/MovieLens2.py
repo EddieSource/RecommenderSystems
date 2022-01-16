@@ -40,6 +40,8 @@ class MovieLens:
         return ratingsDataset
     
     def getNewMovies(self):
+        # for random exploration
+        # just recommend some movies from the latest year
         newMovies = []
         years = self.getYears()
         # What's the newest year in our data?

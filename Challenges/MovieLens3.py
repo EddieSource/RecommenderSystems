@@ -35,6 +35,7 @@ class MovieLens:
         print("Ratings by user:")
         print (ratingsByUser.head())
 
+        # identify the outlier
         ratingsByUser['outlier'] = (abs(ratingsByUser.rating - ratingsByUser.rating.mean()) > ratingsByUser.rating.std() * outlierStdDev)
         ratingsByUser = ratingsByUser.drop(columns=['rating'])
         print("Users with outliers computed:")

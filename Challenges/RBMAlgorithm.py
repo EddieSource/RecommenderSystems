@@ -21,7 +21,7 @@ class RBMAlgorithm(AlgoBase):
         self.batchSize = batchSize
         self.ml = MovieLens()
         self.ml.loadMovieLensLatestSmall()
-        self.stoplist = ["sex", "drugs", "rock n roll"]
+        self.stoplist = ["sex", "drugs", "rock n roll"]     # a small stop list example
         
     def buildStoplist(self, trainset):
         self.stoplistLookup = {}
@@ -50,6 +50,7 @@ class RBMAlgorithm(AlgoBase):
         trainingMatrix = np.zeros([numUsers, numItems, 10], dtype=np.float32)
         
         for (uid, iid, rating) in trainset.all_ratings():
+            # prevent the recommender system from processing items in stoplist
             if not self.stoplistLookup[iid]:
                 adjustedRating = int(float(rating)*2.0) - 1
                 trainingMatrix[int(uid), int(iid), adjustedRating] = 1
